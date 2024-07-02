@@ -10,4 +10,20 @@ function signup(req,res){
     })
 }
 
-module.exports={signup}
+function login(req,res){
+    user_model.findOne({where:{
+        email: req.body.email
+    }}).then(db_res=>{
+        //user found
+        if(db_res){
+            if(req.body.password==db_res.dataValues.password){
+                res.status(200).send(JSON.stringify({message: "Logged In Successfullly"}))
+            }else{
+                res.status(401).send(JSON.stringify({error: "Bad Credentials"}))
+            }
+        }else{
+            res.status(404).send(JSON.stringify({error: "User Not Found"}))
+        }
+    })
+}
+module.exports={signup, login}

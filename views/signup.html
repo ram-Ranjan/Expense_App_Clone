@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+</head>
+<body>
+    <div id="signup_div">
+        <form id="signup_form" onsubmit="handle_signup(event)">
+            <label for="username">Username:</label>
+            <input id="username" name="username" type="text" placeholder="Name" required>
+            <label for="email">Email:</label>
+            <input id="email" name="email" type="email" placeholder="Email" required>
+            <label for="password">Password:</label>
+            <input id="password" name="password" type="password" placeholder="Password" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <a href="signin.html">Already Registered?</a>
+    <div id="dynamic"></div>
+</body>
+<script src="index.js"></script>
+</html>
