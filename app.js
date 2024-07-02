@@ -13,6 +13,7 @@ app.get('/',(req,res)=>{
 })
 
 require('./routes/user_routes')(app)
+require('./routes/expense_routes')(app)
 
 sequelize.sync()
 .then(result => {

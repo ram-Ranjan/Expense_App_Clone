@@ -46,6 +46,7 @@ function handle_signin(event){
             dynamic_div.innerHTML = "User Not Found, Error Code: " + response.status
         }else if(response.status==200){
             dynamic_div.innerHTML = "Logged In Successfully"
+            window.location.href = "../expense_views/expense.html"
         }
     }).catch(err=>{
         console.log(err)
