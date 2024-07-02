@@ -1,6 +1,8 @@
 const user_model = require('../models/user_model')
+const bcrypt = require('bcrypt')
 
 function signup(req,res){
+    req.body.password = bcrypt.hashSync(req.body.password,8)
     user_model.create(req.body)
     .then(db_res=>{
         res.status(201).send(JSON.stringify({message:"User Registered Successfully"}))
@@ -16,7 +18,8 @@ function login(req,res){
     }}).then(db_res=>{
         //user found
         if(db_res){
-            if(req.body.password==db_res.dataValues.password){
+            //checking password
+            if(bcrypt.compareSync(req.body.password, db_res.dataValues.password)){
                 res.status(200).send(JSON.stringify({message: "Logged In Successfullly"}))
             }else{
                 res.status(401).send(JSON.stringify({error: "Bad Credentials"}))
