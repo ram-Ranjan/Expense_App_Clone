@@ -14,6 +14,10 @@ function handle_signup(event){
         body : JSON.stringify(user_details)
     }).then(response=>{
         console.log(response)
+        if(response.status == 403){
+            let dynamic_div = document.getElementById('dynamic')
+            dynamic_div.innerHTML = "Error: User Already Exists, Error Code: " + response.status
+        }
     }).catch(err=>{
         console.log(err)
     })

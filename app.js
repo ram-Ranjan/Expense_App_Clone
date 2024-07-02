@@ -1,5 +1,6 @@
 let express = require('express')
 const cors = require('cors')
+const sequelize = require('./util/database')
 
 let app = express()
 
@@ -13,6 +14,8 @@ app.get('/',(req,res)=>{
 
 require('./routes/user_routes')(app)
 
-app.listen(3000,()=>{
-    console.log("app running on 3000")
-})
+sequelize.sync()
+.then(result => {
+    app.listen(3000)
+    console.log("Synced with DB and app runing on port: ",3000)
+}).catch(err => console.log(err))
