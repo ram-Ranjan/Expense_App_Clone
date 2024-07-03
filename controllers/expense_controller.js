@@ -1,7 +1,11 @@
 const expense_model = require('../models/expense_model')
+const { verify_jwt_token } = require('../util/jwt')
 
 function get_expense(req,res){
-    expense_model.findAll()
+    let userId = verify_jwt_token(req.headers.authorization)
+    expense_model.findAll({where:{
+        userId: userId
+    }})
     .then(db_res=>{
         res.status(200).send(db_res)
     }).catch(err=>{
@@ -11,6 +15,7 @@ function get_expense(req,res){
 }
 
 function add_expense(req,res){
+    req.body.userId = verify_jwt_token(req.body.userId)
     expense_model.create(req.body)
     .then(db_res=>{
         res.status(201).send(db_res)

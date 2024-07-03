@@ -17,6 +17,8 @@ function handle_signup(event){
         if(response.status == 403){
             let dynamic_div = document.getElementById('dynamic')
             dynamic_div.innerHTML = "Error: User Already Exists, Error Code: " + response.status
+        }else if(response.status == 201){
+            window.location.href = "signin.html"
         }
     }).catch(err=>{
         console.log(err)
@@ -31,6 +33,8 @@ function handle_signin(event){
         password: event.target.password.value
     }
 
+    let dynamic_div = document.getElementById('dynamic')
+
     fetch('http://localhost:3000/user/login',{
         method: 'POST',
         headers: {
@@ -38,16 +42,18 @@ function handle_signin(event){
         },
         body: JSON.stringify(user_details)
     }).then(response=>{
-        let dynamic_div = document.getElementById('dynamic')
         if(response.status==401){
             //wrong password
             dynamic_div.innerHTML = "Wrong Password, Error Code: " + response.status
         }else if(response.status==404){
             dynamic_div.innerHTML = "User Not Found, Error Code: " + response.status
         }else if(response.status==200){
-            dynamic_div.innerHTML = "Logged In Successfully"
-            window.location.href = "../expense_views/expense.html"
+            return response.json()
         }
+    }).then(response=>{
+        //dynamic_div.innerHTML = "Logged In Successfully"
+        localStorage.setItem("token",response.token)
+        window.location.href = "../expense_views/expense.html"
     }).catch(err=>{
         console.log(err)
     })

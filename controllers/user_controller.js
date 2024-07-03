@@ -1,5 +1,6 @@
 const user_model = require('../models/user_model')
 const bcrypt = require('bcrypt')
+const { generate_jwt_token } = require('../util/jwt')
 
 function signup(req,res){
     req.body.password = bcrypt.hashSync(req.body.password,8)
@@ -20,7 +21,8 @@ function login(req,res){
         if(db_res){
             //checking password
             if(bcrypt.compareSync(req.body.password, db_res.dataValues.password)){
-                res.status(200).send(JSON.stringify({message: "Logged In Successfullly"}))
+                let token = generate_jwt_token(db_res.dataValues.id)
+                res.status(200).send(JSON.stringify({message: "Logged In Successfullly",token:token}))
             }else{
                 res.status(401).send(JSON.stringify({error: "Bad Credentials"}))
             }

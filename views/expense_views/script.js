@@ -5,6 +5,7 @@ function handle_submit(event){
         expense_cost: event.target.expense_cost.value,
         description: event.target.description.value,
         category: event.target.category.value,
+        userId: localStorage.getItem('token')
     }
 
     fetch('http://localhost:3000/expense/add-expense',{

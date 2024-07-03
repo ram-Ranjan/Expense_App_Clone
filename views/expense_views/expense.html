@@ -12,6 +12,8 @@
         window.onload=event=>{
             fetch('http://localhost:3000/expense/get-expense',{
             method: 'GET',
+            contentType: 'application/json',
+            headers: {"Authorization": localStorage.getItem('token')}
             }).then(res=>{
                 return res.json()
             }).then(data=>{
