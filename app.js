@@ -3,6 +3,7 @@ const cors = require('cors')
 const sequelize = require('./util/database')
 const user_model = require('./models/user_model')
 const expense_model = require('./models/expense_model')
+const order_model = require('./models/order_model')
 
 let app = express()
 
@@ -19,6 +20,9 @@ require('./routes/expense_routes')(app)
 
 user_model.hasMany(expense_model)
 expense_model.belongsTo(user_model)
+
+user_model.hasMany(order_model)
+order_model.belongsTo(user_model)
 
 sequelize.sync()
 .then(result => {

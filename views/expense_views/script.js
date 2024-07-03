@@ -1,3 +1,5 @@
+const Razorpay = require("razorpay")
+
 function handle_submit(event){
     event.preventDefault()
     
@@ -53,3 +55,45 @@ function display_expense(expense_details) {
     })
 }
 
+function buy_premium(event){
+    fetch('http://localhost:3000/user/purchase-premium',{
+        method: 'GET',
+        contentType: 'application/json',
+        headers: {'Authorization': localStorage.getItem('token')}
+    }).then(response=>{
+        if(response.status==201){
+            return response.json()
+        }
+    }).then(response=>{
+        let options = {
+            'key': response.key_id,
+            'order_id': response.order.id,
+            'handler': function(){
+                fetch('http://localhost:3000/user/update-transaction-status',{
+                    method: 'GET',
+                    contentType: 'application/json',
+                    headers: {'Authorization': localStorage.getItem('token')},
+                    body: {
+                        order_id: options.order_id,
+                        payment_id: response.razorpay_payment_id,
+                    }
+                }).then(result=>{
+                    console.log(result,'now premium')
+                }).catch(err=>{
+                    console.log(err)
+                })
+            }
+        }
+
+        let razor = new Razorpay(options)
+        
+        razor.open()
+        event.preventDefault()
+        razor.on('payment.failed',function(response){
+            console.log("r",response)
+        })
+
+    }).catch(err=>{
+        console.log(err)
+    })
+}
