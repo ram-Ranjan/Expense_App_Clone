@@ -110,7 +110,11 @@ function show_leaderboard(event){
     .then(response=>{
         for(let user_expense of response.data){
             let list_item = document.createElement('li')
-            list_item.innerHTML = 'Name: '+user_expense.username+', Total Expenses: '+user_expense.total
+            if(user_expense.total){
+                list_item.innerHTML = 'Name: '+user_expense.username+', Total Expenses: '+user_expense.total
+            }else{
+                list_item.innerHTML = 'Name: '+user_expense.username+', Total Expenses: '+0
+            }
             let leaderboard_list = leaderboard_div.querySelector('ul')
             leaderboard_list.appendChild(list_item)
         }

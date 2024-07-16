@@ -108,7 +108,7 @@ async function get_leaderboard(req,res){
                 attributes: []
             }],
             group: ['userId'],
-            order: [[Sequelize.literal('total'), 'DESC']],
+            order: [['total', 'DESC']],
             raw: true
         })
         //console.log(results)
