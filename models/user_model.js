@@ -17,6 +17,10 @@ const user_model = sequelize.define('users',{
     is_premium:{
         type: Sequelize.BOOLEAN,
         defaultValue: false
+    },
+    total_expenses:{
+        type: Sequelize.INTEGER,
+        defaultValue: 0
     }
 },{timestamps: false})
 

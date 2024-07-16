@@ -101,14 +101,9 @@ async function get_leaderboard(req,res){
         const results = await user_model.findAll({
             attributes: [
                 'username',
-                [Sequelize.fn('SUM', Sequelize.col('expenses.expense_cost')), 'total']
+                'total_expenses'
             ],
-            include: [{
-                model: expense_model,
-                attributes: []
-            }],
-            group: ['userId'],
-            order: [['total', 'DESC']],
+            order: [['total_expenses', 'DESC']],
             raw: true
         })
         //console.log(results)
