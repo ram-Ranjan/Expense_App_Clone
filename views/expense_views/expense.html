@@ -10,10 +10,12 @@
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <script>
         window.onload=event=>{
+            //get all the expenses of the user logged in
+            let token = localStorage.getItem('token')
             fetch('http://localhost:3000/expense/get-expense',{
             method: 'GET',
             contentType: 'application/json',
-            headers: {"Authorization": localStorage.getItem('token')}
+            headers: {"Authorization": token}
             }).then(res=>{
                 return res.json()
             }).then(data=>{
@@ -24,6 +26,49 @@
                     expense_details.description=expense.description
                     expense_details.category=expense.category
                     display_expense(expense_details)
+                }
+            }).catch(err=>{
+                console.log(err)
+            })
+
+            fetch('http://localhost:3000/user/check-premium',{
+                method: 'GET',
+                contentType: 'application/json',
+                headers: {"Authorization": token}
+            }).then(response=>{
+                if(response.status==200){
+                    return response.json()
+                }
+            }).then(response=>{
+                //display username
+                let name_h = document.createElement('h6')
+                name_h.innerHTML = 'Welcome '+response.username
+                let body_tag = document.getElementsByTagName('body')
+                body_tag[0].prepend(name_h)
+
+                //remove or add preimum button based on is_premium
+                if(response.is_premium){
+                    let premium_btn = document.getElementById('premium_btn')
+                    if(premium_btn){
+                        premium_btn.remove()
+                    }
+                    //show the user is premium
+                    let preimum_p = document.createElement('h6')
+                    preimum_p.innerHTML = 'You Are A Premium User '+ String.fromCodePoint(0x26A1)
+                    body_tag[0].prepend(preimum_p)
+
+                    //show leaderboard feature
+                    let leaderboard_btn = document.createElement('button')
+                    leaderboard_btn.id = 'leaderboard_btn'
+                    leaderboard_btn.innerHTML = 'Show Leaderboard'
+                    leaderboard_btn.setAttribute('onclick','show_leaderboard(event)')
+                    body_tag[0].append(leaderboard_btn)
+                }else{
+                    let premium_btn = document.createElement('button')
+                    premium_btn.id = 'premium_btn'
+                    premium_btn.innerHTML = 'Buy Premium Membership'
+                    premium_btn.setAttribute('onclick','buy_premium(event)')
+                    body_tag[0].append(premium_btn)
                 }
             }).catch(err=>{
                 console.log(err)
@@ -49,10 +94,13 @@
     </select>
     <button type="submit">Submit</button>
   </form>
-  <ul></ul>
-  <button onclick="buy_premium(event)">Buy Premium Membership</button>
+  <div id="expense_div">
+    <h4>Expenses</h4>
+    <ul></ul>
+  </div>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <div id="leaderboard_div"><ul></ul></div>
 </body>
 <script src="script.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </html>

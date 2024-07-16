@@ -13,6 +13,10 @@ const user_model = sequelize.define('users',{
     password:{
         type: Sequelize.STRING,
         allowNull: false
+    },
+    is_premium:{
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
     }
 },{timestamps: false})
 

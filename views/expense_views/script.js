@@ -1,5 +1,3 @@
-const Razorpay = require("razorpay")
-
 function handle_submit(event){
     event.preventDefault()
     
@@ -42,7 +40,8 @@ function display_expense(expense_details) {
     deleteBtn.appendChild(document.createTextNode("Delete"))
     expenseItem.appendChild(deleteBtn)        
     
-    const expensList = document.querySelector('ul')
+    const expense_div = document.getElementById('expense_div')
+    const expensList = expense_div.querySelector('ul')
     expensList.appendChild(expenseItem)
     deleteBtn.addEventListener('click', function (event) {
         fetch(`http://localhost:3000/expense/delete-expense/${expense_details.id}`, {
@@ -68,17 +67,17 @@ function buy_premium(event){
         let options = {
             'key': response.key_id,
             'order_id': response.order.id,
-            'handler': function(){
-                fetch('http://localhost:3000/user/update-transaction-status',{
-                    method: 'GET',
-                    contentType: 'application/json',
-                    headers: {'Authorization': localStorage.getItem('token')},
-                    body: {
-                        order_id: options.order_id,
-                        payment_id: response.razorpay_payment_id,
-                    }
-                }).then(result=>{
-                    console.log(result,'now premium')
+            'handler': function(response){
+                axios.post('http://localhost:3000/user/update-transaction-status',{
+                    order_id: options.order_id,
+                    payment_id: response.razorpay_payment_id,
+                },{headers: {'Authorization': localStorage.getItem('token')}
+                })
+                .then(result=>{
+                    //console.log(result,'now premium')
+                    alert("You are now a Premium User")
+                    let premium_btn = document.getElementById('premium_btn')
+                    premium_btn.remove()
                 }).catch(err=>{
                     console.log(err)
                 })
@@ -92,7 +91,29 @@ function buy_premium(event){
         razor.on('payment.failed',function(response){
             console.log("r",response)
         })
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+}
 
+function show_leaderboard(event){
+    event.preventDefault()
+    let leaderboard_div = document.getElementById('leaderboard_div')
+    let leaderboard_h = document.createElement('h4')
+    leaderboard_h.innerHTML = 'Leaderboard'
+    leaderboard_div.prepend(leaderboard_h)
+    let leaderboard_btn = document.getElementById('leaderboard_btn')
+    leaderboard_btn.remove()
+
+    axios.get('http://localhost:3000/premium/leaderboard')
+    .then(response=>{
+        for(let user_expense of response.data){
+            let list_item = document.createElement('li')
+            list_item.innerHTML = 'Name: '+user_expense.username+', Total Expenses: '+user_expense.total
+            let leaderboard_list = leaderboard_div.querySelector('ul')
+            leaderboard_list.appendChild(list_item)
+        }
     }).catch(err=>{
         console.log(err)
     })
