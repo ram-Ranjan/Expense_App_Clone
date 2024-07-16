@@ -46,6 +46,7 @@ function display_expense(expense_details) {
     deleteBtn.addEventListener('click', function (event) {
         fetch(`http://localhost:3000/expense/delete-expense/${expense_details.id}`, {
             method: 'DELETE',
+            headers: {'Authorization': localStorage.getItem('token')}
         })
         .then(() => {
             expensList.removeChild(event.target.parentElement);

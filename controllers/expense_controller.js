@@ -40,17 +40,25 @@ async function add_expense(req,res){
     }
 }
 
-function delete_expense(req,res){
+async function delete_expense(req,res){
     let expense_id = req.params.id
-    expense_model.findByPk(expense_id)
-    .then(expense=>{
-        if(expense){
+    let userId = verify_jwt_token(req.headers.authorization)
+    try{
+        await sequelize.transaction(async (t) => {
+            //update expense table
+            let expense = await expense_model.findByPk(expense_id)
+
+            //update user table
+            await user_model.update(
+                { total_expenses: Sequelize.literal(`total_expenses - ${expense.dataValues.expense_cost}`)},
+                { where: { id: userId }, transaction: t }
+            )
             expense.destroy()
             res.status(204).send()
-        }
-    }).catch(err=>{
+        })
+    }catch(err){
         res.status(500).json({ error: err })
-    })
+    }
 }
 
 module.exports = {get_expense, add_expense, delete_expense}
