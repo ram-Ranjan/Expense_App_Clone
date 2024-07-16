@@ -1,6 +1,6 @@
 const user_model = require('../models/user_model')
 const order_model = require('../models/order_model')
-const expense_model = require('../models/expense_model')
+const sequelize = require('../util/database')
 const Sequelize = require('sequelize')
 const bcrypt = require('bcrypt')
 const { generate_jwt_token,verify_jwt_token } = require('../util/jwt')
@@ -63,16 +63,21 @@ function upgrade_to_premium(req,res){
     //res.status(200).send({message: "Upgraded To Premium Successfully"})
 }
 
-function update_tsc_status(req,res){
+async function update_tsc_status(req,res){
     try{
-        user_model.update(
-            {is_premium: true},
-            {where: {id: verify_jwt_token(req.headers.authorization)}}
-        )
-        order_model.update(
-            {payment_id: req.body.payment_id, status: "SUCCESSFUL"},
-            {where: {order_id: req.body.order_id}}
-        )
+        // Start a transaction
+        await sequelize.transaction(async (t) => {
+            //update user table
+            await user_model.update(
+                {is_premium: true},
+                {where: {id: verify_jwt_token(req.headers.authorization)}, transaction: t}
+            )
+            //update order table
+            await order_model.update(
+                {payment_id: req.body.payment_id, status: "SUCCESSFUL"},
+                {where: {order_id: req.body.order_id}, transaction: t}
+            )
+        })
         res.status(200).send(JSON.stringify({message:"User Upgraded To Premium"}))
     }catch(err){
         console.log(err)
