@@ -63,6 +63,14 @@
                     leaderboard_btn.innerHTML = 'Show Leaderboard'
                     leaderboard_btn.setAttribute('onclick','show_leaderboard(event)')
                     body_tag[0].append(leaderboard_btn)
+
+                    //show expenses and income chart
+                    let income_expense_chart_btn = document.createElement('button')
+                    income_expense_chart_btn.id = 'income_expense_chart_btn'
+                    income_expense_chart_btn.innerHTML = 'Show Income/Expense Chart'
+                    income_expense_chart_btn.setAttribute('onclick','show_income_expense_chart(event)')
+                    body_tag[0].append(income_expense_chart_btn)
+
                 }else{
                     let premium_btn = document.createElement('button')
                     premium_btn.id = 'premium_btn'

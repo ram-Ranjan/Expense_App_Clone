@@ -123,3 +123,100 @@ function show_leaderboard(event){
         console.log(err)
     })
 }
+
+function show_income_expense_chart(event){
+    event.preventDefault()
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    `;
+
+    // Append the style element to the document head
+    document.head.appendChild(style);
+
+    let income_expense_chart_btn = document.getElementById('income_expense_chart_btn')
+    income_expense_chart_btn.remove()
+
+    let body_tag = document.getElementsByTagName('body')
+    let table = document.createElement('table')
+    let heading_row = document.createElement('tr')
+
+    let date_heading = document.createElement('th')
+    date_heading.innerHTML = 'Date'
+    let description_heading = document.createElement('th')
+    description_heading.innerHTML = 'Description'
+    let category_heading = document.createElement('th')
+    category_heading.innerHTML = 'Category'
+    let income_heading = document.createElement('th')
+    income_heading.innerHTML = 'Income'
+    let expense_heading = document.createElement('th')
+    expense_heading.innerHTML = 'Expense'
+
+    heading_row.appendChild(date_heading)
+    heading_row.appendChild(description_heading)
+    heading_row.appendChild(category_heading)
+    heading_row.appendChild(income_heading)
+    heading_row.appendChild(expense_heading)
+
+    table.appendChild(heading_row)
+
+    axios.get('http://localhost:3000/expense/get-expense',{
+        headers: {'Authorization': localStorage.getItem('token')}
+    }).then(response=>{
+        for(let record of response.data){
+            let data_row = document.createElement('tr')
+
+            let date = document.createElement('td')
+            date.innerHTML = '17-07-2024'
+            let description = document.createElement('td')
+            description.innerHTML = record.description
+            let category = document.createElement('td')
+            category.innerHTML = record.category
+            let income = document.createElement('td')
+            income.innerHTML = 0
+            let expense = document.createElement('td')
+            expense.innerHTML = record.expense_cost
+
+            data_row.appendChild(date)
+            data_row.appendChild(description)
+            data_row.appendChild(category)
+            data_row.appendChild(income)
+            data_row.appendChild(expense)
+
+            table.appendChild(data_row)
+        }
+        body_tag[0].appendChild(table)
+        
+        let download_btn = document.createElement('button')
+        download_btn.id = 'download_btn'
+        download_btn.type = 'button'
+        download_btn.innerHTML = 'Download As CSV'
+
+        body_tag[0].appendChild(download_btn)
+        
+    }).catch(err=>{
+        console.log(err)
+    })
+}
