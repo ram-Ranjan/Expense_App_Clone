@@ -58,3 +58,17 @@ function handle_signin(event){
         console.log(err)
     })
 }
+
+function handle_forgot_password(event){
+    event.preventDefault()
+
+    axios.post('http://localhost:3000/password/forgot-password',{
+        email: event.target.email.value
+    })
+    .then(response=>{
+        //console.log(response)
+        alert('Reset Password Mail Sent')
+    }).catch(err=>{
+        console.log(err)
+    })
+}

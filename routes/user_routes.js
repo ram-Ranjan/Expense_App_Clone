@@ -1,5 +1,5 @@
 //importing controllers
-const { signup, login, upgrade_to_premium, update_tsc_status, check_premium, get_leaderboard } = require("../controllers/user_controller")
+const { signup, login, upgrade_to_premium, update_tsc_status, check_premium, get_leaderboard, forgot_password } = require("../controllers/user_controller")
 
 //importing middlewares
 const { verify_user } = require('../middlewares/user_auth')
@@ -10,5 +10,6 @@ module.exports = function(app){
     app.get('/user/purchase-premium',upgrade_to_premium),
     app.post('/user/update-transaction-status',update_tsc_status),
     app.get('/user/check-premium',check_premium),
-    app.get('/premium/leaderboard',get_leaderboard)
+    app.get('/premium/leaderboard',get_leaderboard),
+    app.post('/password/forgot-password',forgot_password)
 }

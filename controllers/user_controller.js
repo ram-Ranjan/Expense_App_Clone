@@ -5,6 +5,7 @@ const Sequelize = require('sequelize')
 const bcrypt = require('bcrypt')
 const { generate_jwt_token,verify_jwt_token } = require('../util/jwt')
 const Razorpay = require('razorpay')
+const Sib = require('sib-api-v3-sdk')
 require('dotenv').config()
 
 async function signup(req,res){
@@ -122,4 +123,35 @@ async function get_leaderboard(req,res){
     }
 }
 
-module.exports={signup, login, upgrade_to_premium, update_tsc_status, check_premium, get_leaderboard}
+function forgot_password(req,res){
+    const client = Sib.ApiClient.instance
+    const api_key_obj = client.authentications['api-key']
+    api_key_obj.apiKey = process.env.SIB_API_KEY
+    
+    const sender = {
+        email: process.env.EMAIL,
+        name: 'Hardik'
+    }
+    const receivers = [
+        {
+            email: req.body.email
+        }
+    ]
+
+    const email_api = new Sib.TransactionalEmailsApi()
+    email_api.sendTransacEmail({
+        sender,
+        to: receivers,
+        subject: 'Reset Password',
+        textContent: 'Change Password'
+    }).then(response=>{
+        console.log(response)
+        res.status(200).send({message:"hello"})
+    }).catch(err=>{
+        console.log(err)
+        res.status(500).send(JSON.stringify({error: err}))
+    })
+
+}
+
+module.exports={signup, login, upgrade_to_premium, update_tsc_status, check_premium, get_leaderboard, forgot_password}
