@@ -72,3 +72,24 @@ function handle_forgot_password(event){
         console.log(err)
     })
 }
+
+function handle_reset_password(event){
+    event.preventDefault()
+
+    if(event.target.new_password.value!=event.target.confirm_password.value){
+        return alert('Password Did Not Match')
+    }
+
+    axios.post('http://localhost:3000/password/reset-new-password',{
+        userId: event.target.userId.value,
+        new_password: event.target.new_password.value
+    })
+    .then(response=>{
+        //console.log(response)
+        alert('Password Reset Successful')
+        let reset_div = document.getElementById('reset_div')
+        reset_div.innerHTML = 'Password Updated Successfully'
+    }).catch(err=>{
+        console.log(err)
+    })
+}
