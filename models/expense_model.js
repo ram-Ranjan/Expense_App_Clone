@@ -3,16 +3,20 @@ const Sequelize = require('sequelize')
 
 const expense_model = sequelize.define('expenses',{
     expense_cost:{
-        type:Sequelize.INTEGER,
-        allowNull:false
+        type: Sequelize.INTEGER,
+        allowNull: false
     },
     description:{
-        type:Sequelize.STRING,
-        allowNull:false
+        type: Sequelize.STRING,
+        allowNull: false
     },
     category:{
-        type:Sequelize.STRING,
-        allowNull:false
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    created_at:{
+        type: Sequelize.STRING,
+        allowNull: false
     }
 },{timestamps: false})
 

@@ -32,7 +32,7 @@ function display_expense(expense_details) {
     const expenseItem = document.createElement('li')
     expenseItem.appendChild(
         document.createTextNode(
-            `${expense_details.expense_cost} - ${expense_details.description} - ${expense_details.category}`
+            `${expense_details.created_at} - ${expense_details.expense_cost} - ${expense_details.description} - ${expense_details.category}`
         )
     )
     //adding delete button
@@ -189,7 +189,7 @@ function show_income_expense_chart(event){
             let data_row = document.createElement('tr')
 
             let date = document.createElement('td')
-            date.innerHTML = '17-07-2024'
+            date.innerHTML = record.created_at
             let description = document.createElement('td')
             description.innerHTML = record.description
             let category = document.createElement('td')

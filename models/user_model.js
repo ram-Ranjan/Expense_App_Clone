@@ -22,6 +22,6 @@ const user_model = sequelize.define('users',{
         type: Sequelize.INTEGER,
         defaultValue: 0
     }
-},{timestamps: false})
+})
 
 module.exports = user_model

@@ -20,11 +20,12 @@
                 return res.json()
             }).then(data=>{
                 for(expense of data){
-                    let expense_details={}
-                    expense_details.id=expense.id
-                    expense_details.expense_cost=expense.expense_cost
-                    expense_details.description=expense.description
-                    expense_details.category=expense.category
+                    let expense_details = {}
+                    expense_details.id = expense.id
+                    expense_details.expense_cost = expense.expense_cost
+                    expense_details.description = expense.description
+                    expense_details.category = expense.category
+                    expense_details.created_at = expense.created_at
                     display_expense(expense_details)
                 }
             }).catch(err=>{

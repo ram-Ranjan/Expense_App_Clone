@@ -11,6 +11,6 @@ const forgot_password_req_model = sequelize.define('forgot_password_req',{
         type: Sequelize.BOOLEAN,
         defaultValue: true
     }
-},{timestamps: false})
+})
 
 module.exports = forgot_password_req_model
