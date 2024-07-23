@@ -211,4 +211,6 @@ async function reset_new_password(req,res){
     }
 }
 
-module.exports={signup, login, upgrade_to_premium, update_tsc_status, check_premium, get_leaderboard, forgot_password, reset_password, reset_new_password}
+module.exports={signup, login, upgrade_to_premium, 
+    update_tsc_status, check_premium, get_leaderboard, 
+    forgot_password, reset_password, reset_new_password}

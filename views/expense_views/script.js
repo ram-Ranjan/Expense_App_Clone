@@ -182,10 +182,10 @@ function show_income_expense_chart(event){
 
     table.appendChild(heading_row)
 
-    axios.get('http://localhost:3000/expense/get-expense',{
+    axios.get('http://localhost:3000/expense/get-chart',{
         headers: {'Authorization': localStorage.getItem('token')}
     }).then(response=>{
-        for(let record of response.data){
+        for(let record of response.data.db_res){
             let data_row = document.createElement('tr')
 
             let date = document.createElement('td')
@@ -213,9 +213,37 @@ function show_income_expense_chart(event){
         download_btn.id = 'download_btn'
         download_btn.type = 'button'
         download_btn.innerHTML = 'Download As CSV'
-
+        download_btn.setAttribute('onclick','download_csv(event)')
+        
         body_tag[0].appendChild(download_btn)
         
+        let hidden_file_id = document.createElement('input')
+        hidden_file_id.type = 'hidden'
+        hidden_file_id.id = 'hidden-id'
+        hidden_file_id.value = response.data.file_id
+
+        body_tag[0].appendChild(hidden_file_id)
+
+    }).catch(err=>{
+        console.log(err)
+    })
+}
+
+function download_csv(event){
+    event.preventDefault()
+
+    let file_id = document.getElementById('hidden-id').value
+
+    axios.post('http://localhost:3000/expense/download-csv',
+        {file_id: file_id},
+        {headers: {'Authorization': localStorage.getItem('token')}
+    }).then(response=>{
+        if(response.status==200){
+            let a = document.createElement('a')
+            a.href = response.data.file_url
+            a.download = 'My_Income_Expense.csv'
+            a.click()
+        }
     }).catch(err=>{
         console.log(err)
     })
