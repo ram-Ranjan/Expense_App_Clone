@@ -15,6 +15,25 @@ async function get_expense_service(userId){
     }
 }
 
+async function get_expense_paginated_service(userId, page, limit, offset){
+    try {
+        const expenses = await expense_model.findAndCountAll({
+            where: {userId: userId},
+            limit: limit,
+            offset: offset
+        })
+        return {
+            totalRecords: expenses.count,
+            totalPages: Math.ceil(expenses.count / limit),
+            currentPage: page,
+            data: expenses.rows
+        }
+    } catch (err) {
+        console.error(err)
+        return {error: err}
+    }
+}
+
 async function add_expense_service(data_to_insert){
     let expense
     try {
@@ -58,7 +77,8 @@ async function delete_expense_service(expense_id,userId){
 }
 
 module.exports = {
-    get_expense_service, 
+    get_expense_service,
+    get_expense_paginated_service,
     add_expense_service,
     delete_expense_service
 }

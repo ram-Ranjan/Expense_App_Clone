@@ -3,9 +3,8 @@ const get_date_time = require('../util/date_time_now')
 const upload_csv = require('../util/s3_upload')
 const generate_csv = require('../util/generate_csv')
 
-const { get_expense_service, 
-    add_expense_service, 
-    delete_expense_service } = require('../services/expense_services')
+const { get_expense_service, get_expense_paginated_service, 
+    add_expense_service, delete_expense_service } = require('../services/expense_services')
 
 async function get_expense(req,res){
     let userId = verify_jwt_token(req.headers.authorization)
@@ -15,6 +14,20 @@ async function get_expense(req,res){
         res.status(500).send(JSON.stringify({error: db_res.error}))
     }else{
         res.status(200).send(db_res)
+    }
+}
+
+async function get_expense_paginated(req, res){
+    let userId = verify_jwt_token(req.headers.authorization)
+    const page = parseInt(req.query.page) || 1  // Default to page 1 if not provided
+    const limit = 2  // Number of records per page
+    const offset = (page - 1) * limit
+
+    let response = await get_expense_paginated_service(userId, page, limit, offset)
+    if(response.error){
+        res.status(500).json(response)
+    }else{
+        res.status(200).json(response)
     }
 }
 
@@ -86,7 +99,8 @@ async function download_csv(req,res){
     }
 }
 
+
 module.exports = {
     get_expense, add_expense, delete_expense, 
-    get_chart, download_csv
+    get_chart, download_csv, get_expense_paginated
 }
