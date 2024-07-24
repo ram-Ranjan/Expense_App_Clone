@@ -1,7 +1,9 @@
 //importing controllers
-const { signup, login, upgrade_to_premium, update_tsc_status, 
-    check_premium, get_leaderboard, forgot_password, 
+const { signup, login, forgot_password, 
     reset_password, reset_new_password } = require("../controllers/user_controller")
+
+const { get_leaderboard, upgrade_to_premium, 
+    update_tsc_status, check_premium } = require('../controllers/premium_controller')
 
 //importing middlewares
 const { verify_user } = require('../middlewares/user_auth')
