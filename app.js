@@ -1,14 +1,19 @@
 let express = require('express')
+let helmet = require('helmet')
+let morgan = require('morgan')
 const cors = require('cors')
 const sequelize = require('./util/database')
 const user_model = require('./models/user_model')
 const expense_model = require('./models/expense_model')
 const order_model = require('./models/order_model')
 const forgot_password_req_model = require('./models/forgot_password_req_model')
+require('dotenv').config
 
 let app = express()
 
 app.use(cors())
+app.use(helmet())
+app.use(morgan('combined'))
 app.use(express.json())
 app.use(express.static('views/user_views'))
 
@@ -29,8 +34,10 @@ order_model.belongsTo(user_model)
 user_model.hasMany(forgot_password_req_model)
 forgot_password_req_model.belongsTo(user_model)
 
+let PORT = process.env.PORT || 3000
+
 sequelize.sync()
 .then(result => {
-    app.listen(3000)
-    console.log("Synced with DB and app runing on port: ",3000)
+    app.listen(PORT)
+    console.log("Synced with DB and app runing on port: ",PORT)
 }).catch(err => console.log(err))
