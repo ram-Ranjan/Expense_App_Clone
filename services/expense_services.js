@@ -23,9 +23,9 @@ async function get_expense_paginated_service(userId, page, limit, offset){
             offset: offset
         })
         return {
-            totalRecords: expenses.count,
-            totalPages: Math.ceil(expenses.count / limit),
-            currentPage: page,
+            total_records: expenses.count,
+            total_pages: Math.ceil(expenses.count / limit),
+            current_page: page,
             data: expenses.rows
         }
     } catch (err) {

@@ -20,7 +20,7 @@ async function get_expense(req,res){
 async function get_expense_paginated(req, res){
     let userId = verify_jwt_token(req.headers.authorization)
     const page = parseInt(req.query.page) || 1  // Default to page 1 if not provided
-    const limit = 2  // Number of records per page
+    const limit = parseInt(req.query.limit) || 10  // Number of records per page
     const offset = (page - 1) * limit
 
     let response = await get_expense_paginated_service(userId, page, limit, offset)

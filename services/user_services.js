@@ -13,7 +13,6 @@ async function signup_service(user){
             await user_model.create(user)
         })
         return {message: 'User Registered Successfully'}
-        
     }catch(err){
         console.log(err)
         return {error:err}
@@ -97,7 +96,6 @@ async function reset_new_password_service(new_password, userId){
                 {password: new_password},
                 {where: {id: userId}, transaction: t}
             )
-
             await forgot_password_req_model.update(
                 {is_active: false},
                 {where: {userId: userId}, transaction: t}

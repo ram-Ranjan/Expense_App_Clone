@@ -1,11 +1,15 @@
-let currentPage = 1
+let current_page = 1 // default page
+let items_per_page = 10 // default number of records per page
 
 document.addEventListener('DOMContentLoaded', () => {
     //on windows load
     let token = localStorage.getItem('token')
+
+    //set items_per_page in localStorage
+    localStorage.setItem('items_per_page', items_per_page)
     
     //fetch all expenses
-    fetch_expenses(currentPage)
+    fetch_expenses(current_page, items_per_page)
 
     //check if premium
     fetch('http://localhost:3000/user/check-premium',{
@@ -60,20 +64,28 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     document.getElementById('prev-btn').addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--
-            fetch_expenses(currentPage)
+        if (current_page > 1) {
+            current_page--
+            fetch_expenses(current_page, items_per_page)
         }
     })
 
     document.getElementById('next-btn').addEventListener('click', () => {
-        currentPage++
-        fetch_expenses(currentPage)
+        current_page++
+        fetch_expenses(current_page, items_per_page)
     })
-});
 
-function fetch_expenses(page) {
-    fetch(`http://localhost:3000/expense/get-expenses-paginated?page=${page}`,{
+    document.getElementById('items-per-page').addEventListener('change', (event) => {
+        //set items per page in localStorage
+        localStorage.setItem('items_per_page', parseInt(event.target.value))
+        items_per_page = localStorage.getItem('items_per_page')
+        current_page = 1  // Reset to the first page
+        fetch_expenses(current_page, items_per_page)
+    })
+})
+
+function fetch_expenses(page, limit) {
+    fetch(`http://localhost:3000/expense/get-expenses-paginated?page=${page}&limit=${limit}`,{
         method: 'GET',
         contentType: 'application/json',
         headers: {'Authorization': localStorage.getItem('token')}
@@ -81,7 +93,7 @@ function fetch_expenses(page) {
         .then(response => response.json())
         .then(data => {
             display_expenses(data.data)
-            update_pagination(data.totalPages, data.currentPage)
+            update_pagination(data.total_pages, data.current_page)
         })
         .catch(error => console.error('Error fetching expenses:', error))
 }
@@ -109,7 +121,7 @@ function handle_submit(event){
     })
     .then((result) => {
         alert('New Expense Added')
-        fetch_expenses(currentPage)
+        fetch_expenses(current_page, items_per_page)
     })
     .catch((err) => console.log(err))
     
@@ -153,11 +165,11 @@ function display_expenses(expenses) {
     })
 }
 
-function update_pagination(totalPages, currentPage) {
-    document.getElementById('page-info').textContent = `Page ${currentPage} of ${totalPages}`
+function update_pagination(total_pages, current_page) {
+    document.getElementById('page-info').textContent = `Page ${current_page} of ${total_pages}`
     
-    document.getElementById('prev-btn').classList.toggle('disabled', currentPage === 1)
-    document.getElementById('next-btn').classList.toggle('disabled', currentPage === totalPages)
+    document.getElementById('prev-btn').classList.toggle('disabled', current_page === 1)
+    document.getElementById('next-btn').classList.toggle('disabled', current_page === total_pages)
 }
 
 
@@ -173,7 +185,7 @@ function delete_expense(id) {
     })
     .then(response => {
         alert('Expense Deleted Successfully')
-        fetch_expenses(currentPage)
+        fetch_expenses(current_page, items_per_page)
     })
     .catch(error => console.error('Error deleting expense:', error))
 }
